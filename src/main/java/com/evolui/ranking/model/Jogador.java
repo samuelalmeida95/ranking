@@ -1,22 +1,25 @@
 package com.evolui.ranking.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import lombok.*;
+
+import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
+@Getter
+@Setter
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Jogador {
 
     @Id
-    @Column(name = "id_jogador", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id_jogador;
 
     private String nome;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "jogadores", cascade = CascadeType.ALL)
     private List<Partida> partidasJogadas = new LinkedList<>();
-
 }
