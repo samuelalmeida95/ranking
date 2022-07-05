@@ -1,8 +1,10 @@
 package com.evolui.ranking.model;
 
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,10 +18,11 @@ public class Jogador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id_jogador;
+    private Long idJogador;
 
+    @NotEmpty
+    @NotNull
     private String nome;
-
-    @ManyToMany(mappedBy = "jogadores", cascade = CascadeType.ALL)
-    private List<Partida> partidasJogadas = new LinkedList<>();
+    private Long quantidadeVitorias;
+    private Long partidas;
 }
