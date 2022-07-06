@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -73,7 +74,19 @@ class JogadorServiceTest {
     }
 
     @Test
-    void cadastrar() {
+    void whenCreateReturnSuccess() {
+        when(jogadorRepository.save(any())).thenReturn(jogador);
+
+        Jogador response = jogadorService.cadastrar(jogador);
+
+        assertNotNull(response);
+        assertEquals(Jogador.class, response.getClass());
+        assertEquals(Jogador.class, response.getClass());
+        assertEquals(ID_JOGADOR, response.getIdJogador());
+        assertEquals(NOME, response.getNome());
+        assertEquals(QUANTIDADE_PARTIDAS, response.getQuantidadePartidas());
+        assertEquals(QUANTIDADE_VITORIAS, response.getQuantidadeVitorias());
+
     }
 
     @Test
