@@ -1,13 +1,11 @@
 package com.evolui.ranking.service;
 
-import com.evolui.ranking.controller.dto.JogadorDTO;
 import com.evolui.ranking.model.Jogador;
 import com.evolui.ranking.repository.JogadorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -149,5 +147,4 @@ class JogadorServiceTest {
         jogador = new Jogador(ID_JOGADOR, NOME, QUANTIDADE_VITORIAS, QUANTIDADE_PARTIDAS);
         jogador2 = new Jogador(ID_JOGADOR2, NOME2, QUANTIDADE_VITORIAS2, QUANTIDADE_PARTIDAS2);
     }
-
 }
