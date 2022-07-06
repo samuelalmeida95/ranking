@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class RankingApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void main() {
+		RankingApplication.main(new String[]{});
 	}
 
 }
