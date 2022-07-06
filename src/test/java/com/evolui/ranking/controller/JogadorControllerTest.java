@@ -3,6 +3,7 @@ package com.evolui.ranking.controller;
 import com.evolui.ranking.controller.dto.JogadorDTO;
 import com.evolui.ranking.model.Jogador;
 import com.evolui.ranking.service.JogadorService;
+import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,10 +11,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -45,6 +51,14 @@ class JogadorControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         startJogador();
+        HttpServletRequest httpServletRequestMock = new MockHttpServletRequest();
+        ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(httpServletRequestMock);
+        RequestContextHolder.setRequestAttributes(servletRequestAttributes);
+    }
+
+    @After("")
+    public void teardown() {
+        RequestContextHolder.resetRequestAttributes();
     }
 
     @Test
@@ -66,7 +80,14 @@ class JogadorControllerTest {
     }
 
     @Test
-    void cadastrarJogador() {
+    void whenCreateThenReturnCreated() {
+        when(jogadorService.cadastrar(any())).thenReturn(jogador);
+
+        ResponseEntity<JogadorDTO> response = jogadorController.cadastrarJogador(jogador);
+
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getHeaders().get("Location"));
     }
 
     @Test
@@ -98,5 +119,7 @@ class JogadorControllerTest {
     private void startJogador() {
         jogador = new Jogador(ID_JOGADOR, NOME, QUANTIDADE_VITORIAS, QUANTIDADE_PARTIDAS);
         jogador2 = new Jogador(ID_JOGADOR2, NOME2, QUANTIDADE_VITORIAS2, QUANTIDADE_PARTIDAS2);
+
+        jogadorDTO = new JogadorDTO(ID_JOGADOR2, NOME2, QUANTIDADE_VITORIAS2, QUANTIDADE_PARTIDAS2);
     }
 }
