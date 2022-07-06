@@ -3,14 +3,15 @@ package com.evolui.ranking.service;
 import com.evolui.ranking.controller.dto.JogadorDTO;
 import com.evolui.ranking.model.Jogador;
 import com.evolui.ranking.repository.JogadorRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -22,8 +23,8 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 class JogadorServiceTest {
 
-    public static final Long ID_JOGADOR          = 1L;
-    public static final String NOME              = "Bob Esponja";
+    public static final Long ID_JOGADOR = 1L;
+    public static final String NOME = "Bob Esponja";
     public static final Long QUANTIDADE_VITORIAS = 10L;
     public static final Long QUANTIDADE_PARTIDAS = 12L;
 
@@ -58,6 +59,18 @@ class JogadorServiceTest {
     }
 
     @Test
+    void whenFindByIdThenReturnAnResponseStatusException() {
+        when(jogadorRepository.findById(anyLong()))
+            .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Jogador não encontrado!"));
+
+        try {
+            jogadorService.findById(ID_JOGADOR);
+        } catch (Exception e) {
+            assertEquals(ResponseStatusException.class, e.getClass());
+        }
+    }
+
+    @Test
     void cadastrar() {
     }
 
@@ -73,7 +86,7 @@ class JogadorServiceTest {
     void findByVitorias() {
     }
 
-    private void startJogador(){
+    private void startJogador() {
         jogador = new Jogador(ID_JOGADOR, NOME, QUANTIDADE_VITORIAS, QUANTIDADE_PARTIDAS);
         jogadorDTO = new JogadorDTO(ID_JOGADOR, NOME, QUANTIDADE_VITORIAS, QUANTIDADE_PARTIDAS);
     }
