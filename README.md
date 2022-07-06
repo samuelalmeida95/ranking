@@ -8,7 +8,7 @@
 
 </br>
 
-#### Games Ranking
+### Games Ranking
 
 </br>
 
@@ -18,4 +18,7 @@ deles teve a ideia de preparar um sistema que gravasse um ranking dos jogos. Ess
 mostraria o jogador, as vitórias e as partidas que esse jogador participou.</i>
 
 </br>
+
+### 🎯 <i>Sobre o projeto.. </i>
+<img align="center" src="https://github.com/samuelalmeida95/ranking/blob/master/Screenshot_1.png"></img>
 
