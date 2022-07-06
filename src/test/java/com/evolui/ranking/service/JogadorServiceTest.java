@@ -86,11 +86,19 @@ class JogadorServiceTest {
         assertEquals(NOME, response.getNome());
         assertEquals(QUANTIDADE_PARTIDAS, response.getQuantidadePartidas());
         assertEquals(QUANTIDADE_VITORIAS, response.getQuantidadeVitorias());
-
     }
 
     @Test
-    void incrementaVitoriasPartidas() {
+    void whenIncrementWinsGamesSuccess() {
+        when(jogadorRepository.save(any())).thenReturn(jogador);
+        when(jogadorRepository.findById(anyLong())).thenReturn(Optional.ofNullable(jogador));
+        Jogador response = jogadorService.incrementaVitoriasPartidas(ID_JOGADOR, 20L, 20L);
+
+        assertNotNull(response);
+        assertEquals(ID_JOGADOR, response.getIdJogador());
+        assertEquals(NOME, response.getNome());
+        assertEquals(20L, response.getQuantidadePartidas());
+        assertEquals(20L, response.getQuantidadeVitorias());
     }
 
     @Test
