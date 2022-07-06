@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -27,6 +28,7 @@ class JogadorServiceTest {
     public static final String NOME = "Bob Esponja";
     public static final Long QUANTIDADE_VITORIAS = 10L;
     public static final Long QUANTIDADE_PARTIDAS = 12L;
+    public static final int INDEX = 0;
 
     @InjectMocks
     private JogadorService jogadorService;
@@ -79,7 +81,19 @@ class JogadorServiceTest {
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnAnListOfUsers() {
+        when(jogadorRepository.findAll()).thenReturn(List.of(jogador));
+
+        List<Jogador> response = jogadorService.findAll();
+
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(Jogador.class, response.get(INDEX).getClass());
+
+        assertEquals(ID_JOGADOR, response.get(INDEX).getIdJogador());
+        assertEquals(NOME, response.get(INDEX).getNome());
+        assertEquals(QUANTIDADE_VITORIAS, response.get(INDEX).getQuantidadeVitorias());
+        assertEquals(QUANTIDADE_PARTIDAS, response.get(INDEX).getQuantidadePartidas());
     }
 
     @Test
