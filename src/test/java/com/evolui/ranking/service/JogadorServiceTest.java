@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -31,6 +31,12 @@ class JogadorServiceTest {
     public static final Long QUANTIDADE_PARTIDAS = 12L;
     public static final int INDEX = 0;
 
+    public static final Long ID_JOGADOR2 = 2L;
+    public static final String NOME2 = "Lula Molusco";
+    public static final Long QUANTIDADE_VITORIAS2 = 100L;
+    public static final Long QUANTIDADE_PARTIDAS2 = 120L;
+    public static final int INDEX1 = 1;
+
     @InjectMocks
     private JogadorService jogadorService;
 
@@ -38,8 +44,7 @@ class JogadorServiceTest {
     private JogadorRepository jogadorRepository;
 
     private Jogador jogador;
-    private JogadorDTO jogadorDTO;
-
+    private Jogador jogador2;
 
     @BeforeEach
     void setUp() {
@@ -118,12 +123,31 @@ class JogadorServiceTest {
     }
 
     @Test
-    void findByVitorias() {
+    void whenFindByVitoriasSuccess() {
+        when(jogadorRepository.findAllByOrderByQuantidadeVitoriasAsc()).thenReturn(List.of(jogador, jogador2));
+
+        List<Jogador> response = jogadorService.findAllByVitorias();
+        assertNotNull(response);
+        assertEquals(2, response.size());
+
+        assertEquals(ID_JOGADOR, response.get(INDEX).getIdJogador());
+        assertEquals(NOME, response.get(INDEX).getNome());
+        assertEquals(QUANTIDADE_VITORIAS, response.get(INDEX).getQuantidadeVitorias());
+        assertEquals(QUANTIDADE_PARTIDAS, response.get(INDEX).getQuantidadePartidas());
+
+        assertEquals(ID_JOGADOR2, response.get(INDEX1).getIdJogador());
+        assertEquals(NOME2, response.get(INDEX1).getNome());
+        assertEquals(QUANTIDADE_VITORIAS2, response.get(INDEX1).getQuantidadeVitorias());
+        assertEquals(QUANTIDADE_PARTIDAS2, response.get(INDEX1).getQuantidadePartidas());
+
+        assertTrue(response.get(INDEX1).getQuantidadeVitorias() > response.get(INDEX).getQuantidadeVitorias());
+        assertTrue(response.get(INDEX).getQuantidadeVitorias() < response.get(INDEX1).getQuantidadeVitorias());
+        assertNotEquals(response.get(INDEX).getQuantidadeVitorias(), response.get(INDEX1).getQuantidadeVitorias());
     }
 
     private void startJogador() {
         jogador = new Jogador(ID_JOGADOR, NOME, QUANTIDADE_VITORIAS, QUANTIDADE_PARTIDAS);
-        jogadorDTO = new JogadorDTO(ID_JOGADOR, NOME, QUANTIDADE_VITORIAS, QUANTIDADE_PARTIDAS);
+        jogador2 = new Jogador(ID_JOGADOR2, NOME2, QUANTIDADE_VITORIAS2, QUANTIDADE_PARTIDAS2);
     }
 
 }
