@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -57,7 +60,7 @@ class JogadorControllerTest {
 
         assertEquals(ID_JOGADOR, response.getBody().getIdJogador());
         assertEquals(NOME, response.getBody().getNome());
-        assertEquals(QUANTIDADE_PARTIDAS, response.getBody().getPartidas());
+        assertEquals(QUANTIDADE_PARTIDAS, response.getBody().getQuantidadePartidas());
         assertEquals(QUANTIDADE_VITORIAS, response.getBody().getQuantidadeVitorias());
 
     }
@@ -71,7 +74,21 @@ class JogadorControllerTest {
     }
 
     @Test
-    void listarTodos() {
+    void whenFindAllThenReturnAListOfUserDTO() {
+        when(jogadorService.findAll()).thenReturn(List.of(jogador));
+
+        ResponseEntity<List<JogadorDTO>> response = jogadorController.listarTodos();
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(JogadorDTO.class, response.getBody().get(INDEX).getClass());
+
+        assertEquals(ID_JOGADOR, response.getBody().get(INDEX).getIdJogador());
+        assertEquals(NOME, response.getBody().get(INDEX).getNome());
+        assertEquals(QUANTIDADE_PARTIDAS, response.getBody().get(INDEX).getQuantidadePartidas());
+        assertEquals(QUANTIDADE_VITORIAS, response.getBody().get(INDEX).getQuantidadeVitorias());
     }
 
     @Test
