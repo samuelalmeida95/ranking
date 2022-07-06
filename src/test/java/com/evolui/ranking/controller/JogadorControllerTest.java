@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -17,12 +18,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
 class JogadorControllerTest {
 
     public static final Long ID_JOGADOR = 1L;
@@ -45,12 +48,13 @@ class JogadorControllerTest {
 
     private Jogador jogador;
     private Jogador jogador2;
-    private JogadorDTO jogadorDTO;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
         startJogador();
+
         HttpServletRequest httpServletRequestMock = new MockHttpServletRequest();
         ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(httpServletRequestMock);
         RequestContextHolder.setRequestAttributes(servletRequestAttributes);
@@ -91,20 +95,15 @@ class JogadorControllerTest {
     }
 
     @Test
-    void adicionaVitoriasEPartidasDoJogador() {
-    }
-
-    @Test
     void whenFindAllThenReturnAListOfUserDTO() {
         when(jogadorService.findAll()).thenReturn(List.of(jogador));
 
         ResponseEntity<List<JogadorDTO>> response = jogadorController.listarTodos();
 
-        assertNotNull(response);
-        assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ResponseEntity.class, response.getClass());
-        assertEquals(JogadorDTO.class, response.getBody().get(INDEX).getClass());
+
+        assertEquals(JogadorDTO.class, Objects.requireNonNull(response.getBody()).get(INDEX).getClass());
 
         assertEquals(ID_JOGADOR, response.getBody().get(INDEX).getIdJogador());
         assertEquals(NOME, response.getBody().get(INDEX).getNome());
@@ -113,13 +112,34 @@ class JogadorControllerTest {
     }
 
     @Test
-    void listarPorVitorias() {
+    void whenFindByVitoriasSuccess() {
+        when(jogadorService.findAllByVitorias()).thenReturn(List.of(jogador, jogador2));
+
+        ResponseEntity<List<JogadorDTO>> response = jogadorController.listarPorVitorias();
+
+        assertNotNull(response);
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+
+        assertEquals(ID_JOGADOR, response.getBody().get(INDEX).getIdJogador());
+        assertEquals(NOME, response.getBody().get(INDEX).getNome());
+        assertEquals(QUANTIDADE_VITORIAS, response.getBody().get(INDEX).getQuantidadeVitorias());
+        assertEquals(QUANTIDADE_PARTIDAS, response.getBody().get(INDEX).getQuantidadePartidas());
+
+        assertEquals(ID_JOGADOR2, response.getBody().get(INDEX1).getIdJogador());
+        assertEquals(NOME2, response.getBody().get(INDEX1).getNome());
+        assertEquals(QUANTIDADE_VITORIAS2, response.getBody().get(INDEX1).getQuantidadeVitorias());
+        assertEquals(QUANTIDADE_PARTIDAS2, response.getBody().get(INDEX1).getQuantidadePartidas());
+
+        assertTrue(response.getBody().get(INDEX1).getQuantidadeVitorias() > response.getBody().get(INDEX).getQuantidadeVitorias());
+        assertTrue(response.getBody().get(INDEX).getQuantidadeVitorias() < response.getBody().get(INDEX1).getQuantidadeVitorias());
+        assertNotEquals(response.getBody().get(INDEX).getQuantidadeVitorias(), response.getBody().get(INDEX1).getQuantidadeVitorias());
     }
 
     private void startJogador() {
         jogador = new Jogador(ID_JOGADOR, NOME, QUANTIDADE_VITORIAS, QUANTIDADE_PARTIDAS);
         jogador2 = new Jogador(ID_JOGADOR2, NOME2, QUANTIDADE_VITORIAS2, QUANTIDADE_PARTIDAS2);
-
-        jogadorDTO = new JogadorDTO(ID_JOGADOR2, NOME2, QUANTIDADE_VITORIAS2, QUANTIDADE_PARTIDAS2);
     }
 }

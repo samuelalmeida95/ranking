@@ -97,11 +97,8 @@ class JogadorServiceTest {
         when(jogadorRepository.findById(anyLong())).thenReturn(Optional.ofNullable(jogador));
         Jogador response = jogadorService.incrementaVitoriasPartidas(ID_JOGADOR, 20L, 20L);
 
-        assertNotNull(response);
-        assertEquals(ID_JOGADOR, response.getIdJogador());
-        assertEquals(NOME, response.getNome());
-        assertEquals(20L, response.getQuantidadePartidas());
-        assertEquals(20L, response.getQuantidadeVitorias());
+        assertEquals(32L, response.getQuantidadePartidas());
+        assertEquals(30L, response.getQuantidadeVitorias());
     }
 
     @Test
