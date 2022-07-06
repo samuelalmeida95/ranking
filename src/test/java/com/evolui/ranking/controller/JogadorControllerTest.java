@@ -2,13 +2,17 @@ package com.evolui.ranking.controller;
 
 import com.evolui.ranking.controller.dto.JogadorDTO;
 import com.evolui.ranking.model.Jogador;
+import com.evolui.ranking.service.JogadorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 class JogadorControllerTest {
 
@@ -27,6 +31,9 @@ class JogadorControllerTest {
     @InjectMocks
     private JogadorController jogadorController;
 
+    @Mock
+    private JogadorService jogadorService;
+
     private Jogador jogador;
     private Jogador jogador2;
     private JogadorDTO jogadorDTO;
@@ -38,7 +45,21 @@ class JogadorControllerTest {
     }
 
     @Test
-    void buscarPorId() {
+    void whenFindByIdThenReturnSuccess() {
+        when(jogadorService.findById(anyLong())).thenReturn(jogador);
+
+        ResponseEntity<JogadorDTO> response = jogadorController.buscarPorId(ID_JOGADOR);
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(JogadorDTO.class, response.getBody().getClass());
+
+        assertEquals(ID_JOGADOR, response.getBody().getIdJogador());
+        assertEquals(NOME, response.getBody().getNome());
+        assertEquals(QUANTIDADE_PARTIDAS, response.getBody().getPartidas());
+        assertEquals(QUANTIDADE_VITORIAS, response.getBody().getQuantidadeVitorias());
+
     }
 
     @Test
